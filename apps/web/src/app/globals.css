@@ -9,14 +9,13 @@
   --primary-light: #0b5c66;
   --primary-soft: #ddf7f2;
 
-  --accent-blue: #2563eb;
-  --accent-blue-soft: #dbeafe;
-  --accent-amber: #b45309;
-  --accent-amber-soft: #fef3c7;
-  --accent-purple: #7c3aed;
-  --accent-purple-soft: #ede9fe;
-  --accent-rose: #be123c;
-  --accent-rose-soft: #ffe4e6;
+  --accent-mint-soft: #a7f3d0;
+  --accent-sky-soft: #dbeafe;
+  --accent-amber-soft: #fef08a;
+  --accent-lilac-soft: #ddd6fe;
+  --accent-rose-soft: #fbcfe8;
+
+  --icon-ink: #0b1517;
 
   --surface: #ffffff;
   --surface-muted: #eef4f3;
@@ -48,14 +47,13 @@
   --color-primary-light: var(--primary-light);
   --color-primary-soft: var(--primary-soft);
 
-  --color-accent-blue: var(--accent-blue);
-  --color-accent-blue-soft: var(--accent-blue-soft);
-  --color-accent-amber: var(--accent-amber);
+  --color-accent-mint-soft: var(--accent-mint-soft);
+  --color-accent-sky-soft: var(--accent-sky-soft);
   --color-accent-amber-soft: var(--accent-amber-soft);
-  --color-accent-purple: var(--accent-purple);
-  --color-accent-purple-soft: var(--accent-purple-soft);
-  --color-accent-rose: var(--accent-rose);
+  --color-accent-lilac-soft: var(--accent-lilac-soft);
   --color-accent-rose-soft: var(--accent-rose-soft);
+
+  --color-icon-ink: var(--icon-ink);
 
   --color-surface: var(--surface);
   --color-surface-muted: var(--surface-muted);
@@ -99,6 +97,22 @@ a {
 ::selection {
   background: var(--primary-soft);
   color: var(--primary-dark);
+}
+
+.subtle-fade-up {
+  animation: subtleFadeUp 420ms ease both;
+}
+
+@keyframes subtleFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
