@@ -9,6 +9,15 @@
   --primary-light: #0b5c66;
   --primary-soft: #ddf7f2;
 
+  --accent-blue: #2563eb;
+  --accent-blue-soft: #dbeafe;
+  --accent-amber: #b45309;
+  --accent-amber-soft: #fef3c7;
+  --accent-purple: #7c3aed;
+  --accent-purple-soft: #ede9fe;
+  --accent-rose: #be123c;
+  --accent-rose-soft: #ffe4e6;
+
   --surface: #ffffff;
   --surface-muted: #eef4f3;
 
@@ -24,15 +33,30 @@
   --radius-sm: 0.5rem;
   --radius-md: 0.875rem;
   --radius-lg: 1.25rem;
+  --radius-xl: 1.5rem;
+
+  --transition-fast: 150ms ease;
+  --transition-base: 220ms ease;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
   --color-primary-light: var(--primary-light);
   --color-primary-soft: var(--primary-soft);
+
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-blue-soft: var(--accent-blue-soft);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-amber-soft: var(--accent-amber-soft);
+  --color-accent-purple: var(--accent-purple);
+  --color-accent-purple-soft: var(--accent-purple-soft);
+  --color-accent-rose: var(--accent-rose);
+  --color-accent-rose-soft: var(--accent-rose-soft);
+
   --color-surface: var(--surface);
   --color-surface-muted: var(--surface-muted);
   --color-border: var(--border);
@@ -48,6 +72,7 @@
 html {
   min-height: 100%;
   background: var(--background);
+  scroll-behavior: smooth;
 }
 
 body {
@@ -66,7 +91,27 @@ textarea {
   outline-color: var(--primary);
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 ::selection {
   background: var(--primary-soft);
   color: var(--primary-dark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
 }

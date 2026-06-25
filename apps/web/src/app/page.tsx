@@ -7,45 +7,53 @@ import {
   Layers3,
   Table2
 } from "lucide-react";
+import { FeatureCard } from "@/components/ui/FeatureCard";
+import { WorkspacePreview } from "@/components/ui/WorkspacePreview";
 
 const featureCards = [
   {
     title: "Upload CSV data",
     description:
       "Bring in sales, survey, customer, product, student, or operational data.",
-    icon: FileSpreadsheet
+    icon: FileSpreadsheet,
+    accent: "blue"
   },
   {
     title: "Infer the structure",
     description:
       "Exfolia detects columns and prepares the dataset for filtering and charts.",
-    icon: Database
+    icon: Database,
+    accent: "primary"
   },
   {
     title: "Build visual queries",
     description:
       "Create nested filters without writing SQL or touching the database directly.",
-    icon: Filter
+    icon: Filter,
+    accent: "amber"
   },
   {
     title: "Explore results",
     description:
       "Review filtered rows in a virtualized table designed for larger datasets.",
-    icon: Table2
+    icon: Table2,
+    accent: "purple"
   },
   {
     title: "Generate charts",
     description:
       "Turn query results into useful dashboard visuals with clean chart suggestions.",
-    icon: BarChart3
+    icon: BarChart3,
+    accent: "rose"
   },
   {
     title: "Ask AI for insight",
     description:
       "Use Gemini or Groq to explain computed summaries, trends, and next steps.",
-    icon: Brain
+    icon: Brain,
+    accent: "primary"
   }
-];
+] as const;
 
 export default function Home() {
   return (
@@ -60,20 +68,20 @@ export default function Home() {
           </a>
 
           <nav className="hidden items-center gap-6 text-sm text-muted md:flex">
-            <a className="transition hover:text-primary" href="#features">
+            <a className="transition-colors duration-150 hover:text-primary" href="#features">
               Features
             </a>
-            <a className="transition hover:text-primary" href="#workflow">
+            <a className="transition-colors duration-150 hover:text-primary" href="#workflow">
               Workflow
             </a>
-            <a className="transition hover:text-primary" href="#workspace">
+            <a className="transition-colors duration-150 hover:text-primary" href="#workspace">
               Workspace
             </a>
           </nav>
 
           <a
             href="#workspace"
-            className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-primary-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Open workspace
           </a>
@@ -98,92 +106,21 @@ export default function Home() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 href="#workspace"
-                className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors duration-150 hover:bg-primary-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 Start exploring
               </a>
 
               <a
                 href="#features"
-                className="inline-flex items-center justify-center rounded-full border border-border bg-surface px-6 py-3 text-sm font-semibold text-foreground transition hover:border-border-strong hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="inline-flex items-center justify-center rounded-full border border-border bg-surface px-6 py-3 text-sm font-semibold text-foreground transition-colors duration-150 hover:border-border-strong hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 See how it works
               </a>
             </div>
           </section>
 
-          <section
-            id="workspace"
-            className="rounded-[1.5rem] border border-border bg-surface p-4"
-            aria-label="Workspace preview"
-          >
-            <div className="rounded-[1.1rem] border border-border bg-background p-4">
-              <div className="mb-4 flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
-                    Workspace
-                  </p>
-                  <h2 className="mt-1 text-lg font-semibold">Sales overview.csv</h2>
-                </div>
-                <span className="rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary-dark">
-                  Ready
-                </span>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-xl border border-border bg-surface p-4">
-                  <p className="text-xs text-muted">Rows</p>
-                  <p className="mt-2 text-2xl font-semibold">48,210</p>
-                </div>
-                <div className="rounded-xl border border-border bg-surface p-4">
-                  <p className="text-xs text-muted">Columns</p>
-                  <p className="mt-2 text-2xl font-semibold">12</p>
-                </div>
-                <div className="rounded-xl border border-border bg-surface p-4">
-                  <p className="text-xs text-muted">Status</p>
-                  <p className="mt-2 text-2xl font-semibold">Clean</p>
-                </div>
-              </div>
-
-              <div className="mt-4 rounded-xl border border-border bg-surface p-4">
-                <div className="mb-3 flex items-center gap-2 text-sm font-medium">
-                  <Filter size={16} />
-                  Visual query
-                </div>
-                <div className="space-y-2 text-sm text-muted">
-                  <p className="rounded-lg border border-border bg-background px-3 py-2">
-                    revenue greater than 100000
-                  </p>
-                  <p className="rounded-lg border border-border bg-background px-3 py-2">
-                    region equals Lagos or Abuja
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <div className="h-36 rounded-xl border border-border bg-surface p-4">
-                  <div className="flex h-full items-end gap-2">
-                    <span className="h-10 flex-1 rounded-t-md bg-primary-soft" />
-                    <span className="h-20 flex-1 rounded-t-md bg-primary" />
-                    <span className="h-16 flex-1 rounded-t-md bg-primary-light" />
-                    <span className="h-28 flex-1 rounded-t-md bg-primary-dark" />
-                  </div>
-                </div>
-
-                <div className="h-36 rounded-xl border border-border bg-surface p-4">
-                  <div className="mb-3 flex items-center gap-2 text-sm font-medium">
-                    <Brain size={16} />
-                    AI insight
-                  </div>
-                  <p className="text-sm leading-6 text-muted">
-                    Lagos is currently the strongest segment in this filtered
-                    view, with higher-value transactions concentrated in fewer
-                    records.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
+          <WorkspacePreview />
         </div>
 
         <section id="features" className="border-t border-border py-12">
@@ -195,24 +132,15 @@ export default function Home() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {featureCards.map((feature) => {
-              const Icon = feature.icon;
-
-              return (
-                <article
-                  key={feature.title}
-                  className="rounded-2xl border border-border bg-surface p-5"
-                >
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
-                    <Icon size={19} />
-                  </div>
-                  <h3 className="text-base font-semibold">{feature.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted">
-                    {feature.description}
-                  </p>
-                </article>
-              );
-            })}
+            {featureCards.map((feature) => (
+              <FeatureCard
+                key={feature.title}
+                title={feature.title}
+                description={feature.description}
+                icon={feature.icon}
+                accent={feature.accent}
+              />
+            ))}
           </div>
         </section>
       </section>
