@@ -1,0 +1,23 @@
+{
+    "name": "exfolia",
+    "version": "0.1.0",
+    "private": true,
+    "description": "An AI-powered data exploration workspace for uploading CSV datasets, building visual queries, generating dashboards, and receiving AI-assisted insights.",
+    "scripts": {
+        "lint": "echo \"lint setup coming soon\"",
+        "typecheck": "echo \"typecheck setup coming soon\"",
+        "test": "echo \"test setup coming soon\"",
+        "build": "echo \"build setup coming soon\""
+    },
+    "keywords": [
+        "analytics",
+        "csv",
+        "dashboard",
+        "query-builder",
+        "data-visualization",
+        "ai"
+    ],
+    "author": "Precious Odion",
+    "license": "MIT",
+    "packageManager": "pnpm@9.0.0"
+}
