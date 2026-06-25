@@ -66,3 +66,41 @@ Exfolia is inspired by modern AI data-analysis tools like InsightsFlow AI, but i
 ## Status
 
 Project foundation in progress.
+
+## Development Workflow
+
+Exfolia uses a PR-based workflow.
+
+```bash
+git checkout main
+git pull origin main
+git checkout -b feat/example-feature
+
+Before pushing a branch, run:
+
+pnpm lint
+pnpm format:check
+pnpm typecheck
+pnpm test:unit
+pnpm test:integration
+pnpm build
+
+```
+
+Push your branch and open a pull request.
+
+GitHub Actions will run automated checks on every PR.
+
+CI/CD
+
+CI is configured with GitHub Actions.
+
+Current checks:
+
+lint
+formatting
+typecheck
+unit tests
+integration tests
+build
+E2E placeholder
