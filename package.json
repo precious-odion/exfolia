@@ -5,9 +5,14 @@
     "description": "An AI-powered data exploration workspace for uploading CSV datasets, building visual queries, generating dashboards, and receiving AI-assisted insights.",
     "scripts": {
         "lint": "echo \"lint setup coming soon\"",
+        "format:check": "echo \"format check setup coming soon\"",
         "typecheck": "echo \"typecheck setup coming soon\"",
-        "test": "echo \"test setup coming soon\"",
-        "build": "echo \"build setup coming soon\""
+        "test": "pnpm test:unit && pnpm test:integration",
+        "test:unit": "echo \"unit test setup coming soon\"",
+        "test:integration": "echo \"integration test setup coming soon\"",
+        "test:e2e": "echo \"e2e test setup coming soon\"",
+        "build": "echo \"build setup coming soon\"",
+        "ci": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test:unit && pnpm test:integration && pnpm build"
     },
     "keywords": [
         "analytics",
