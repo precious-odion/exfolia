@@ -12,7 +12,12 @@
         "test:integration": "echo \"integration test setup coming soon\"",
         "test:e2e": "echo \"e2e test setup coming soon\"",
         "build": "echo \"build setup coming soon\"",
-        "ci": "pnpm run lint && pnpm run format:check && pnpm run typecheck && pnpm run test:unit && pnpm run test:integration && pnpm run build"
+        "ci": "pnpm run lint && pnpm run format:check && pnpm run typecheck && pnpm run test:unit && pnpm run test:integration && pnpm run build",
+        "db:up": "docker compose up -d postgres",
+        "db:down": "docker compose down",
+        "db:logs": "docker compose logs -f postgres",
+        "db:ps": "docker compose ps",
+        "db:reset": "docker compose down -v && docker compose up -d postgres"
     },
     "keywords": [
         "analytics",

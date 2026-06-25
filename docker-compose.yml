@@ -1,0 +1,25 @@
+name: exfolia
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: exfolia-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: exfolia_dev
+      POSTGRES_USER: exfolia
+      POSTGRES_PASSWORD: exfolia_password
+    volumes:
+      - exfolia-postgres-data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U exfolia -d exfolia_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  exfolia-postgres-data:
