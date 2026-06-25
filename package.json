@@ -18,7 +18,10 @@
         "db:down": "docker compose down",
         "db:logs": "docker compose logs -f postgres",
         "db:ps": "docker compose ps",
-        "db:reset": "docker compose down -v && docker compose up -d postgres"
+        "db:reset": "docker compose down -v && docker compose up -d postgres",
+        "db:migrate": "pnpm --filter @exfolia/api db:migrate",
+        "db:rollback": "pnpm --filter @exfolia/api db:rollback",
+        "db:status": "pnpm --filter @exfolia/api db:status"
     },
     "keywords": [
         "analytics",
