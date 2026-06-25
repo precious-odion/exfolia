@@ -4,6 +4,7 @@
     "private": true,
     "description": "An AI-powered data exploration workspace for uploading CSV datasets, building visual queries, generating dashboards, and receiving AI-assisted insights.",
     "scripts": {
+        "dev:web": "pnpm --filter @exfolia/web dev",
         "dev:api": "pnpm --filter @exfolia/api dev",
         "build": "pnpm -r --if-present build",
         "lint": "pnpm -r --if-present lint",
@@ -33,5 +34,5 @@
     ],
     "author": "Precious Odion",
     "license": "MIT",
-    "packageManager": "pnpm@9.0.0"
+    "packageManager": "pnpm@10.23.0"
 }
