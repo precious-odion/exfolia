@@ -1,7 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { IconBadge } from "./IconBadge";
-
-type IconTone = "primary" | "mint" | "sky" | "amber" | "lilac" | "rose";
+import { IconBadge, type IconTone } from "./IconBadge";
 
 type FeatureCardProps = {
     title: string;
@@ -17,8 +15,12 @@ export function FeatureCard({
     tone = "primary"
 }: FeatureCardProps) {
     return (
-        <article className="rounded-3xl border border-border bg-surface p-6 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-border-strong">
-            <IconBadge icon={icon} tone={tone} />
+        <article className="group rounded-3xl border border-border bg-surface p-6 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-border-strong">
+            <IconBadge
+                icon={icon}
+                tone={tone}
+                className="transition-transform duration-300 group-hover:scale-110"
+            />
 
             <h3 className="mt-5 text-base font-semibold text-foreground">{title}</h3>
 

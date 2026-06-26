@@ -1,6 +1,13 @@
 import type { LucideIcon } from "lucide-react";
 
-type IconTone = "primary" | "mint" | "sky" | "amber" | "lilac" | "rose";
+export type IconTone =
+    | "primary"
+    | "mint"
+    | "sky"
+    | "amber"
+    | "lilac"
+    | "rose"
+    | "orange";
 
 const toneStyles: Record<IconTone, string> = {
     primary: "bg-primary-soft",
@@ -8,13 +15,15 @@ const toneStyles: Record<IconTone, string> = {
     sky: "bg-accent-sky-soft",
     amber: "bg-accent-amber-soft",
     lilac: "bg-accent-lilac-soft",
-    rose: "bg-accent-rose-soft"
+    rose: "bg-accent-rose-soft",
+    orange: "bg-accent-orange-soft"
 };
 
 type IconBadgeProps = {
     icon: LucideIcon;
     tone?: IconTone;
     size?: "sm" | "md" | "lg";
+    className?: string;
 };
 
 const sizeStyles = {
@@ -32,13 +41,14 @@ const iconSizes = {
 export function IconBadge({
     icon: Icon,
     tone = "primary",
-    size = "md"
+    size = "md",
+    className = ""
 }: IconBadgeProps) {
     return (
         <span
-            className={`flex shrink-0 items-center justify-center ${sizeStyles[size]} ${toneStyles[tone]}`}
+            className={`flex shrink-0 items-center justify-center ${sizeStyles[size]} ${toneStyles[tone]} ${className}`}
         >
-            <Icon size={iconSizes[size]} strokeWidth={2.1} className="text-icon-ink" />
+            <Icon size={iconSizes[size]} strokeWidth={2.15} className="text-icon-ink" />
         </span>
     );
 }
