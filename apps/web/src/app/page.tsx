@@ -139,7 +139,7 @@ export default function Home() {
     <main className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
-      <section className="mx-auto grid w-full max-w-7xl items-center gap-10 px-5 py-12 sm:px-8 md:py-14 lg:grid-cols-[0.9fr_1.1fr] lg:px-10 lg:py-16">
+      <section className="mx-auto grid w-full max-w-7xl items-start gap-10 px-5 py-12 sm:px-8 md:py-14 lg:grid-cols-[0.9fr_1.1fr] lg:px-10 lg:py-16">
         <Reveal className="max-w-3xl" y={58} scale={0.96}>
           <p className="mb-5 inline-flex rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-primary">
             AI-powered dashboard generation for CSV data
