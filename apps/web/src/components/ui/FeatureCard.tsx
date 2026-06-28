@@ -15,7 +15,7 @@ export function FeatureCard({
     tone = "primary"
 }: FeatureCardProps) {
     return (
-        <article className="group rounded-3xl border border-border bg-surface p-6 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-border-strong">
+        <article className="interactive-card group h-full rounded-3xl border border-border bg-surface p-6 hover:border-border-strong">
             <IconBadge
                 icon={icon}
                 tone={tone}

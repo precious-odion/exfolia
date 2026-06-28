@@ -6,8 +6,7 @@ export type IconTone =
     | "sky"
     | "amber"
     | "lilac"
-    | "rose"
-    | "orange";
+    | "rose";
 
 const toneStyles: Record<IconTone, string> = {
     primary: "bg-primary-soft",
@@ -15,8 +14,7 @@ const toneStyles: Record<IconTone, string> = {
     sky: "bg-accent-sky-soft",
     amber: "bg-accent-amber-soft",
     lilac: "bg-accent-lilac-soft",
-    rose: "bg-accent-rose-soft",
-    orange: "bg-accent-orange-soft"
+    rose: "bg-accent-rose-soft"
 };
 
 type IconBadgeProps = {
