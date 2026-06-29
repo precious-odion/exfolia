@@ -383,7 +383,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="bg-[#000000] py-12 text-white">
+      <footer className="bg-primary py-12 text-white">
         <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 sm:px-8 md:grid-cols-[1fr_0.8fr] lg:px-10">
           <div>
             <div className="flex items-center gap-3">

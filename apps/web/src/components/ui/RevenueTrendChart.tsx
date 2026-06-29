@@ -96,7 +96,7 @@ export function RevenueTrendChart() {
                                 x2={chartWidth - padding.right}
                                 y1={y}
                                 y2={y}
-                                stroke="#dbe7e4"
+                                stroke="var(--chart-grid)"
                                 strokeDasharray="4 6"
                             />
                             <text
@@ -121,7 +121,7 @@ export function RevenueTrendChart() {
                                 x2={point.x}
                                 y1={padding.top}
                                 y2={chartHeight - padding.bottom}
-                                stroke="#e3eeeb"
+                                stroke="var(--chart-grid)"
                                 strokeDasharray="4 6"
                             />
                             <text
@@ -136,12 +136,12 @@ export function RevenueTrendChart() {
                     );
                 })}
 
-                <path d={areaPath} fill="#ddf7f2" opacity="0.75" />
+                <path d={areaPath} fill="var(--chart-area)" opacity="0.75" />
 
                 <path
                     d={linePath}
                     fill="none"
-                    stroke="#06464e"
+                    stroke="var(--primary)"
                     strokeWidth="4"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -154,15 +154,15 @@ export function RevenueTrendChart() {
                             x2={activePoint.x}
                             y1={padding.top}
                             y2={chartHeight - padding.bottom}
-                            stroke="#9eb5b0"
+                            stroke="var(--chart-grid-strong)"
                         />
 
                         <circle
                             cx={activePoint.x}
                             cy={activePoint.y}
                             r="7"
-                            fill="#ffffff"
-                            stroke="#06464e"
+                            fill="var(--surface)"
+                            stroke="var(--primary)"
                             strokeWidth="4"
                         />
                     </>
@@ -171,14 +171,14 @@ export function RevenueTrendChart() {
 
             {activeData && activePoint ? (
                 <div
-                    className="pointer-events-none absolute rounded-2xl bg-[#111827] px-4 py-3 text-white"
+                    className="pointer-events-none absolute rounded-2xl bg-chart-tooltip px-4 py-3 text-white"
                     style={{
                         left: `min(calc(${(activePoint.x / chartWidth) * 100}% + 12px), calc(100% - 150px))`,
                         top: `${activePoint.y + 58}px`
                     }}
                 >
                     <p className="text-sm font-semibold">{activeData.month}</p>
-                    <p className="mt-1 text-sm text-[#3b82f6]">
+                    <p className="mt-1 text-sm text-chart-tooltip-accent">
                         revenue: {activeData.value}
                     </p>
                 </div>

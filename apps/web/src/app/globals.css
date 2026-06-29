@@ -27,6 +27,21 @@
   --danger: #b42318;
   --success: #027a48;
 
+  --chart-grid: #dbe7e4;
+  --chart-grid-strong: #9eb5b0;
+  --chart-area: #f2f2f2;
+  --chart-tooltip: #111827;
+  --chart-tooltip-accent: #3b82f6;
+
+  --window-red: #ff5f57;
+  --window-yellow: #febc2e;
+  --window-green: #28c840;
+
+  --hero-card-shadow: 0 20px 70px rgba(0, 0, 0, 0.1);
+  --hero-photo-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.82) 76%);
+  --category-donut: conic-gradient(var(--accent-amber-soft) 0 38%, var(--primary-soft) 38% 65%, var(--accent-sky-soft) 65% 86%, var(--accent-rose-soft) 86% 100%);
+  --quality-score-ring: conic-gradient(var(--primary) 0 82%, var(--primary-soft) 82% 100%);
+
   --radius-sm: 0.5rem;
   --radius-md: 0.875rem;
   --radius-lg: 1.25rem;
@@ -57,6 +72,12 @@
   --color-border-strong: var(--border-strong);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+
+  --color-chart-tooltip: var(--chart-tooltip);
+  --color-chart-tooltip-accent: var(--chart-tooltip-accent);
+  --color-window-red: var(--window-red);
+  --color-window-yellow: var(--window-yellow);
+  --color-window-green: var(--window-green);
 }
 
 * {
@@ -103,6 +124,23 @@ img {
 ::selection {
   background: var(--primary-soft);
   color: var(--primary);
+}
+
+
+.hero-photo-card {
+  box-shadow: var(--hero-card-shadow);
+}
+
+.hero-photo-overlay {
+  background: var(--hero-photo-overlay);
+}
+
+.category-donut {
+  background: var(--category-donut);
+}
+
+.quality-score-ring {
+  background: var(--quality-score-ring);
 }
 
 .interactive-card {

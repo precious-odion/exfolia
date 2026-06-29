@@ -80,7 +80,7 @@ function DonutChart() {
             </div>
 
             <div className="flex items-center justify-center py-2">
-                <div className="relative flex h-36 w-36 items-center justify-center rounded-full bg-[conic-gradient(#fef08a_0_38%,#ddf7f2_38%_65%,#dbeafe_65%_86%,#fbcfe8_86%_100%)]">
+                <div className="relative flex h-36 w-36 items-center justify-center rounded-full category-donut">
                     <div className="h-20 w-20 rounded-full bg-background" />
                 </div>
             </div>
@@ -109,9 +109,9 @@ export function LiveAnalyticsPreview() {
             <div className="mb-5 flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
                 <div className="flex items-center gap-3">
                     <div className="flex gap-2">
-                        <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
-                        <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
-                        <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+                        <span className="h-3 w-3 rounded-full bg-window-red" />
+                        <span className="h-3 w-3 rounded-full bg-window-yellow" />
+                        <span className="h-3 w-3 rounded-full bg-window-green" />
                     </div>
 
                     <p className="text-sm font-semibold text-foreground">Exfolia Dashboard</p>
@@ -132,8 +132,8 @@ export function LiveAnalyticsPreview() {
                         type="button"
                         onClick={() => setMode(item)}
                         className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 active:scale-[0.98] ${mode === item
-                                ? "bg-primary !text-white"
-                                : "border border-border bg-background text-muted hover:text-primary"
+                            ? "bg-primary !text-white"
+                            : "border border-border bg-background text-muted hover:text-primary"
                             }`}
                     >
                         {item}

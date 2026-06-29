@@ -66,7 +66,7 @@ export function HeroPeopleCards({ className = "" }: { className?: string }) {
             {featuredPeople.map((person, index) => (
                 <article
                     key={person.src}
-                    className={`hero-card group relative min-h-[310px] overflow-hidden rounded-[1.75rem] border border-border bg-surface shadow-[0_20px_70px_rgba(6,70,78,0.10)] ${index === 1 ? "sm:translate-y-8" : index === 2 ? "sm:translate-y-14" : ""
+                    className={`hero-card group relative min-h-[310px] overflow-hidden rounded-[1.75rem] border border-border bg-surface hero-photo-card ${index === 1 ? "sm:translate-y-8" : index === 2 ? "sm:translate-y-14" : ""
                         }`}
                 >
                     <img
@@ -74,7 +74,7 @@ export function HeroPeopleCards({ className = "" }: { className?: string }) {
                         alt={person.alt}
                         className="h-full min-h-[310px] w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(0,0,0,0.82)_76%)] p-5 pt-20 text-white">
+                    <div className="absolute inset-x-0 bottom-0 hero-photo-overlay p-5 pt-20 text-white">
                         <div className="flex items-center gap-2">
                             <p className="text-sm font-semibold">{person.name}</p>
                             <CheckCircle2 size={16} className="text-accent-mint-soft" />
