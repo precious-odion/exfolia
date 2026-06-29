@@ -4,8 +4,8 @@
   --background: #f7faf9;
   --foreground: #102224;
 
-  --primary: #06464e;
-  --primary-soft: #ddf7f2;
+  --primary: #000000;
+  --primary-soft: #e6eceb;
 
   --accent-mint-soft: #a7f3d0;
   --accent-sky-soft: #dbeafe;
@@ -96,6 +96,10 @@ a {
   text-decoration: none;
 }
 
+img {
+  max-width: 100%;
+}
+
 ::selection {
   background: var(--primary-soft);
   color: var(--primary);
@@ -105,7 +109,8 @@ a {
   transition:
     transform 220ms ease,
     border-color 220ms ease,
-    background-color 220ms ease;
+    background-color 220ms ease,
+    opacity 220ms ease;
 }
 
 .interactive-card:hover {
@@ -114,6 +119,20 @@ a {
 
 .interactive-card:active {
   transform: translateY(-1px) scale(0.99);
+}
+
+.hero-card {
+  transition:
+    transform 260ms ease,
+    opacity 260ms ease;
+}
+
+.hero-card:hover {
+  transform: translateY(-8px) scale(1.015);
+}
+
+.ticker-track {
+  animation: tickerScroll 34s linear infinite;
 }
 
 .chart-draw {
@@ -129,6 +148,16 @@ a {
 
 .soft-pulse {
   animation: softPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes tickerScroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @keyframes drawChart {

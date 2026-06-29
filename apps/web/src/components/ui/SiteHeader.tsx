@@ -28,7 +28,7 @@ export function SiteHeader() {
                     <span className="text-lg font-semibold tracking-tight">Exfolia</span>
                 </a>
 
-                <nav className="hidden min-[700px]:flex items-center gap-4 text-sm text-muted lg:gap-6">
+                <nav className="hidden min-[640px]:flex items-center gap-4 text-sm text-muted lg:gap-6">
                     {navLinks.map((link) => (
                         <a key={link.href} className="transition-colors duration-150 hover:text-primary" href={link.href}>
                             {link.label}
@@ -38,14 +38,14 @@ export function SiteHeader() {
 
                 <a
                     href="#workspace"
-                    className="hidden rounded-full bg-primary px-4 py-2 text-sm font-medium !text-white transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary min-[700px]:inline-flex"
+                    className="hidden rounded-full bg-primary px-4 py-2 text-sm font-medium !text-white transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary min-[640px]:inline-flex"
                 >
                     Open workspace
                 </a>
 
                 <button
                     type="button"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-foreground transition-transform duration-200 active:scale-95 min-[700px]:hidden"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-foreground transition-transform duration-200 active:scale-95 min-[640px]:hidden"
                     aria-label="Open menu"
                     aria-expanded={isMenuOpen}
                     onClick={() => setIsMenuOpen(true)}
@@ -55,7 +55,7 @@ export function SiteHeader() {
             </div>
 
             {isMenuOpen ? (
-                <div className="fixed inset-x-0 top-[73px] z-50 min-h-[calc(100vh-73px)] border-t border-border bg-surface px-6 py-6 min-[700px]:hidden">
+                <div className="fixed inset-x-0 top-[73px] z-50 min-h-[calc(100vh-73px)] border-t border-border bg-surface px-6 py-6 min-[640px]:hidden">
                     <div className="flex items-center justify-between border-b border-border pb-5">
                         <p className="text-sm font-semibold text-primary">Menu</p>
                         <button

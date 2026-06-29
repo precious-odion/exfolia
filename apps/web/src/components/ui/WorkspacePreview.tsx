@@ -127,7 +127,7 @@ function SchemaPanel() {
             <article className="rounded-3xl border border-border bg-surface p-4">
                 <p className="text-sm font-semibold text-foreground">Quality score</p>
                 <div className="mt-5 flex items-center justify-center">
-                    <div className="relative flex h-36 w-36 items-center justify-center rounded-full bg-[conic-gradient(#06464e_0_82%,#ddf7f2_82%_100%)] p-3">
+                    <div className="relative flex h-36 w-36 items-center justify-center rounded-full bg-[conic-gradient(#000000_0_82%,#e6eceb_82%_100%)] p-3">
                         <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-surface">
                             <span className="text-3xl font-semibold text-foreground">82%</span>
                             <span className="text-xs text-muted">ready</span>

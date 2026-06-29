@@ -16,7 +16,7 @@ import {
   Upload,
   UsersRound
 } from "lucide-react";
-import { AvatarFace, AvatarStack } from "@/components/ui/Avatar";
+import { AvatarPhoto, HeroPeopleCards } from "@/components/ui/Avatar";
 import { CountUp } from "@/components/ui/CountUp";
 import { DashboardGenerationPreview } from "@/components/ui/DashboardGenerationPreview";
 import { FeatureCard } from "@/components/ui/FeatureCard";
@@ -139,7 +139,7 @@ export default function Home() {
     <main className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
-      <section className="mx-auto grid w-full max-w-7xl items-start gap-10 px-5 py-12 sm:px-8 md:py-14 lg:grid-cols-[0.9fr_1.1fr] lg:px-10 lg:py-16">
+      <section className="mx-auto grid w-full max-w-7xl items-center gap-10 px-5 py-12 sm:px-8 md:py-16 lg:grid-cols-[0.92fr_1.08fr] lg:px-10 lg:py-20">
         <Reveal className="max-w-3xl" y={58} scale={0.96}>
           <p className="mb-5 inline-flex rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-primary">
             AI-powered dashboard generation for CSV data
@@ -170,18 +170,49 @@ export default function Home() {
             </a>
           </div>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-[auto_1fr] sm:items-center">
-            <AvatarStack />
+          <div className="mt-8 flex max-w-xl items-center gap-4 rounded-3xl border border-border bg-surface px-4 py-3">
+            <div className="flex -space-x-3">
+              {[1, 2, 3].map((item) => (
+                <AvatarPhoto
+                  key={item}
+                  src={`/people/person-${item}.jpg`}
+                  alt="Person using Exfolia"
+                  className="h-10 w-10"
+                />
+              ))}
+            </div>
             <p className="text-sm leading-6 text-muted">
               Built for analysts, founders, students, and teams exploring messy CSVs.
             </p>
           </div>
         </Reveal>
 
-        <WorkspacePreview />
+        <Reveal y={58} scale={0.96} delay={0.08}>
+          <HeroPeopleCards />
+        </Reveal>
       </section>
 
-      <section id="features" className="border-y border-border bg-surface py-16 md:py-20">
+      <section id="workspace" className="border-y border-border bg-surface py-16 md:py-20">
+        <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+          <Reveal className="mb-8 grid gap-6 lg:grid-cols-[0.78fr_1fr] lg:items-end">
+            <div>
+              <p className="text-sm font-medium text-primary">Workspace preview</p>
+              <h2 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">
+                Watch a CSV become a working dashboard.
+              </h2>
+            </div>
+            <p className="text-sm leading-7 text-muted">
+              The workspace preview now sits below the hero, so the top section can focus on the message while the product interface gets its own room to breathe.
+            </p>
+          </Reveal>
+
+          <Reveal y={58} scale={0.97}>
+            <WorkspacePreview />
+          </Reveal>
+        </div>
+      </section>
+
+      <section id="features" className="border-b border-border bg-background py-16 md:py-20">
         <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
           <Reveal className="mb-10 max-w-2xl">
             <p className="text-sm font-medium text-primary">What Exfolia does</p>
@@ -209,7 +240,7 @@ export default function Home() {
             <div>
               <p className="text-sm font-medium text-primary">Dashboard generation</p>
               <h2 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">
-                Make the product feel like it is already running.
+                Show the transformation, not just the promise.
               </h2>
             </div>
             <p className="text-sm leading-7 text-muted">
@@ -309,7 +340,11 @@ export default function Home() {
                 <article className="interactive-card group h-full rounded-3xl border border-border bg-surface p-6 hover:border-border-strong">
                   <div className="flex items-center justify-between gap-4">
                     <IconBadge icon={card.icon} tone={card.tone} className="transition-transform duration-300 group-hover:scale-110" />
-                    <AvatarFace tone={card.tone} hair={index % 2 === 0 ? "hood" : "short"} glasses={index % 2 === 0} className="h-12 w-12" />
+                    <AvatarPhoto
+                      src={`/people/person-${(index % 4) + 1}.jpg`}
+                      alt={`${card.title} using Exfolia`}
+                      className="h-12 w-12"
+                    />
                   </div>
                   <h3 className="mt-5 text-base font-semibold text-foreground">{card.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-muted">{card.description}</p>
@@ -348,7 +383,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="bg-[#071011] py-12 text-white">
+      <footer className="bg-[#000000] py-12 text-white">
         <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 sm:px-8 md:grid-cols-[1fr_0.8fr] lg:px-10">
           <div>
             <div className="flex items-center gap-3">
