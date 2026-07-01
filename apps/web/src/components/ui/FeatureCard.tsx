@@ -1,30 +1,41 @@
 import type { LucideIcon } from "lucide-react";
-import { IconBadge, type IconTone } from "./IconBadge";
+import { IconBadge } from "./IconBadge";
+
+type IconTone = "primary" | "mint" | "sky" | "amber" | "lilac" | "rose";
 
 type FeatureCardProps = {
     title: string;
     description: string;
     icon: LucideIcon;
     tone?: IconTone;
+    variant?: "light" | "dark";
 };
 
 export function FeatureCard({
     title,
     description,
     icon,
-    tone = "primary"
+    tone = "primary",
+    variant = "light"
 }: FeatureCardProps) {
+    const isDark = variant === "dark";
+
     return (
-        <article className="interactive-card group h-full rounded-3xl border border-border bg-surface p-6 hover:border-border-strong">
-            <IconBadge
-                icon={icon}
-                tone={tone}
-                className="transition-transform duration-300 group-hover:scale-110"
-            />
+        <article
+            className={`rounded-3xl border p-4 ${isDark
+                    ? "border-transparent bg-transparent text-white"
+                    : "border-border bg-surface text-foreground"
+                }`}
+        >
+            <IconBadge icon={icon} tone={tone} />
 
-            <h3 className="mt-5 text-base font-semibold text-foreground">{title}</h3>
+            <h3 className={`mt-6 text-base font-semibold ${isDark ? "text-white" : "text-foreground"}`}>
+                {title}
+            </h3>
 
-            <p className="mt-2 text-sm leading-6 text-muted">{description}</p>
+            <p className={`mt-3 text-sm leading-6 ${isDark ? "text-white/70" : "text-muted"}`}>
+                {description}
+            </p>
         </article>
     );
 }

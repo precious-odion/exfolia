@@ -1,82 +1,109 @@
 "use client";
 
 import { useState } from "react";
-import {
-    Activity,
-    ArrowUpRight,
-    Bot,
-    Database,
-    FileSpreadsheet,
-    PieChart,
-    Sparkles,
-    TrendingUp,
-    UsersRound
-} from "lucide-react";
+import { BarChart3, Brain, PieChart, TrendingUp } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { AvatarStack } from "./Avatar";
-import { CountUp } from "./CountUp";
-import { IconBadge } from "./IconBadge";
-import { RevenueTrendChart } from "./RevenueTrendChart";
+import { RevenueTrendChart, type TrendPoint } from "./RevenueTrendChart";
+import { WorkspacePreviewTabs } from "./WorkspacePreview";
 
 type PreviewMode = "Revenue" | "Segments" | "Forecast";
 
+type BreakdownItem = {
+    label: string;
+    value: string;
+    dot: string;
+};
+
+type PreviewModeConfig = {
+    chartTitle: string;
+    badge: string;
+    valueLabel: string;
+    maxValue: number;
+    defaultActiveIndex: number;
+    trendData: TrendPoint[];
+    sideTitle: string;
+    sideDescription: string;
+    sideItems: BreakdownItem[];
+};
+
 const previewModes: PreviewMode[] = ["Revenue", "Segments", "Forecast"];
 
-const categoryItems = [
-    { label: "Retail", value: "38%", dot: "bg-accent-amber-soft" },
-    { label: "Healthcare", value: "27%", dot: "bg-primary-soft" },
-    { label: "Finance", value: "21%", dot: "bg-accent-sky-soft" },
-    { label: "Other", value: "14%", dot: "bg-accent-rose-soft" }
-];
-
-const uploads = [
-    { file: "sales_overview.csv", status: "Dashboard ready", tone: "sky" },
-    { file: "customer_segments.csv", status: "Schema detected", tone: "mint" },
-    { file: "global_revenue.csv", status: "Charts generated", tone: "amber" }
-] as const;
-
-const supportCards = [
-    {
-        icon: UsersRound,
-        title: "Audience-ready",
-        copy: "Shareable dashboard drafts for teammates.",
-        tone: "lilac"
-    },
-    {
-        icon: Database,
-        title: "Schema-aware",
-        copy: "Charts use detected column types.",
-        tone: "mint"
-    },
-    {
-        icon: Sparkles,
-        title: "AI-assisted",
-        copy: "Insight is generated from computed context.",
-        tone: "amber"
-    }
-] as const;
-
-const modeCopy: Record<PreviewMode, { description: string }> = {
+const modeConfig: Record<PreviewMode, PreviewModeConfig> = {
     Revenue: {
-        description:
-            "Revenue increased this quarter, with the strongest lift from United States and Canada segments."
+        chartTitle: "Revenue Trend",
+        badge: "+24% Growth",
+        valueLabel: "revenue",
+        maxValue: 8000,
+        defaultActiveIndex: 3,
+        trendData: [
+            { label: "Jan", value: 1100 },
+            { label: "Feb", value: 2100 },
+            { label: "Mar", value: 3000 },
+            { label: "Apr", value: 6100 },
+            { label: "May", value: 5200 },
+            { label: "Jun", value: 7200 }
+        ],
+        sideTitle: "By category",
+        sideDescription: "Revenue share from the current dashboard preview.",
+        sideItems: [
+            { label: "Retail", value: "38%", dot: "bg-accent-amber-soft" },
+            { label: "Healthcare", value: "27%", dot: "bg-primary-soft" },
+            { label: "Finance", value: "21%", dot: "bg-accent-sky-soft" },
+            { label: "Other", value: "14%", dot: "bg-accent-rose-soft" }
+        ]
     },
     Segments: {
-        description:
-            "Retail has the largest share, while healthcare and finance are the next strongest segments."
+        chartTitle: "Segment Share Trend",
+        badge: "Retail leads",
+        valueLabel: "share",
+        maxValue: 50,
+        defaultActiveIndex: 1,
+        trendData: [
+            { label: "Retail", value: 38 },
+            { label: "Health", value: 27 },
+            { label: "Finance", value: 21 },
+            { label: "Other", value: 14 }
+        ],
+        sideTitle: "Segment movement",
+        sideDescription: "Each segment is ranked by its current contribution to the filtered dataset.",
+        sideItems: [
+            { label: "Retail", value: "38%", dot: "bg-accent-amber-soft" },
+            { label: "Healthcare", value: "27%", dot: "bg-accent-mint-soft" },
+            { label: "Finance", value: "21%", dot: "bg-accent-sky-soft" },
+            { label: "Other", value: "14%", dot: "bg-accent-lilac-soft" }
+        ]
     },
     Forecast: {
-        description:
-            "The next period is projected to keep growing if current customer retention stays steady."
+        chartTitle: "Forecast Projection",
+        badge: "Next 6 months",
+        valueLabel: "forecast",
+        maxValue: 10000,
+        defaultActiveIndex: 3,
+        trendData: [
+            { label: "Jul", value: 7600 },
+            { label: "Aug", value: 8100 },
+            { label: "Sep", value: 8450 },
+            { label: "Oct", value: 8900 },
+            { label: "Nov", value: 9300 },
+            { label: "Dec", value: 9700 }
+        ],
+        sideTitle: "Forecast confidence",
+        sideDescription: "Projection uses current growth, segment lift, and recent retention pattern.",
+        sideItems: [
+            { label: "Growth signal", value: "Strong", dot: "bg-accent-mint-soft" },
+            { label: "Retention", value: "Stable", dot: "bg-accent-sky-soft" },
+            { label: "Risk", value: "Low", dot: "bg-accent-amber-soft" }
+        ]
     }
 };
 
-function DonutChart() {
+function CategoryBreakdown({ config }: { config: PreviewModeConfig }) {
     return (
         <div className="rounded-3xl border border-border bg-background p-4 sm:p-5">
             <div className="mb-4 flex items-center gap-2">
                 <PieChart size={17} />
-                <h3 className="text-sm font-semibold text-foreground">By category</h3>
+                <h3 className="text-sm font-semibold text-foreground">{config.sideTitle}</h3>
             </div>
 
             <div className="flex items-center justify-center py-2">
@@ -85,8 +112,10 @@ function DonutChart() {
                 </div>
             </div>
 
+            <p className="mt-2 text-sm leading-6 text-muted">{config.sideDescription}</p>
+
             <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-                {categoryItems.map((item) => (
+                {config.sideItems.map((item) => (
                     <div key={item.label} className="flex items-center justify-between gap-3">
                         <span className="flex items-center gap-2 text-muted">
                             <span className={`h-3 w-3 rounded-full ${item.dot}`} />
@@ -100,9 +129,83 @@ function DonutChart() {
     );
 }
 
+function SegmentBreakdown({ config }: { config: PreviewModeConfig }) {
+    const widths = ["w-[42%]", "w-[22%]", "w-[16%]", "w-[7%]"];
+
+    return (
+        <div className="rounded-3xl border border-border bg-background p-4 sm:p-5">
+            <div className="mb-4 flex items-center gap-2">
+                <BarChart3 size={17} />
+                <h3 className="text-sm font-semibold text-foreground">{config.sideTitle}</h3>
+            </div>
+
+            <p className="text-sm leading-6 text-muted">{config.sideDescription}</p>
+
+            <div className="mt-5 space-y-4">
+                {config.sideItems.map((item, index) => (
+                    <div key={item.label}>
+                        <div className="mb-2 flex items-center justify-between text-sm">
+                            <span className="text-muted">{item.label}</span>
+                            <span className="font-semibold text-foreground">{item.value}</span>
+                        </div>
+                        <div className="h-2 overflow-hidden rounded-full bg-surface-muted">
+                            <motion.span
+                                className={`block h-full rounded-full bg-primary ${widths[index]}`}
+                                initial={{ scaleX: 0.35 }}
+                                animate={{ scaleX: 1 }}
+                                transition={{ duration: 0.45, delay: index * 0.05, ease: "easeOut" }}
+                                style={{ transformOrigin: "left" }}
+                            />
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function ForecastBreakdown({ config }: { config: PreviewModeConfig }) {
+    return (
+        <div className="rounded-3xl border border-border bg-background p-4 sm:p-5">
+            <div className="mb-4 flex items-center gap-2">
+                <Brain size={17} />
+                <h3 className="text-sm font-semibold text-foreground">{config.sideTitle}</h3>
+            </div>
+
+            <p className="text-sm leading-6 text-muted">{config.sideDescription}</p>
+
+            <div className="mt-5 grid gap-3">
+                {config.sideItems.map((item) => (
+                    <div key={item.label} className="flex items-center justify-between rounded-2xl border border-border bg-surface px-4 py-3">
+                        <span className="flex items-center gap-2 text-sm text-muted">
+                            <span className={`h-3 w-3 rounded-full ${item.dot}`} />
+                            {item.label}
+                        </span>
+                        <span className="text-sm font-semibold text-foreground">{item.value}</span>
+                    </div>
+                ))}
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-border bg-surface px-4 py-3">
+                <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                    <TrendingUp size={16} />
+                    Projected December revenue
+                </p>
+                <p className="mt-2 text-2xl font-semibold text-foreground">9700</p>
+            </div>
+        </div>
+    );
+}
+
+function ModeSidePanel({ mode, config }: { mode: PreviewMode; config: PreviewModeConfig }) {
+    if (mode === "Segments") return <SegmentBreakdown config={config} />;
+    if (mode === "Forecast") return <ForecastBreakdown config={config} />;
+    return <CategoryBreakdown config={config} />;
+}
+
 export function LiveAnalyticsPreview() {
     const [mode, setMode] = useState<PreviewMode>("Revenue");
-    const activeMode = modeCopy[mode];
+    const activeConfig = modeConfig[mode];
 
     return (
         <div className="rounded-[2rem] border border-border bg-surface p-4 sm:p-5">
@@ -118,7 +221,6 @@ export function LiveAnalyticsPreview() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <AvatarStack className="hidden sm:flex" />
                     <span className="soft-pulse rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary">
                         Live Data
                     </span>
@@ -150,106 +252,31 @@ export function LiveAnalyticsPreview() {
                         exit={{ opacity: 0, y: -8 }}
                         transition={{ duration: 0.25 }}
                     >
-                        <RevenueTrendChart />
+                        <RevenueTrendChart
+                            title={activeConfig.chartTitle}
+                            badge={activeConfig.badge}
+                            data={activeConfig.trendData}
+                            valueLabel={activeConfig.valueLabel}
+                            maxValue={activeConfig.maxValue}
+                            defaultActiveIndex={activeConfig.defaultActiveIndex}
+                        />
                     </motion.div>
                 </AnimatePresence>
 
-                <div className="grid gap-4">
-                    <DonutChart />
-
-                    <article className="rounded-3xl bg-primary p-5 text-white">
-                        <div className="mb-3 flex items-center gap-2 text-sm font-semibold">
-                            <Bot size={17} />
-                            AI Summary
-                        </div>
-
-                        <p className="text-sm leading-6 text-white/80">{activeMode.description}</p>
-
-                        <button
-                            type="button"
-                            className="mt-4 w-full rounded-xl bg-white/15 px-4 py-3 text-sm font-semibold text-white transition-transform duration-200 active:scale-[0.98]"
-                        >
-                            View full report
-                        </button>
-                    </article>
-                </div>
-            </div>
-
-            <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_0.9fr]">
-                <div className="grid gap-3 sm:grid-cols-3">
-                    <article className="rounded-3xl border border-border bg-background p-4">
-                        <p className="text-xs text-muted">Total revenue</p>
-                        <p className="mt-2 text-2xl font-semibold text-foreground">
-                            <CountUp end={12.4} decimals={1} prefix="$" />M
-                        </p>
-                        <p className="mt-2 flex items-center gap-1 text-xs font-medium text-primary">
-                            <TrendingUp size={14} />
-                            +24% this month
-                        </p>
-                    </article>
-
-                    <article className="rounded-3xl border border-border bg-background p-4">
-                        <p className="text-xs text-muted">Active rows</p>
-                        <p className="mt-2 text-2xl font-semibold text-foreground">
-                            <CountUp end={48210} />
-                        </p>
-                        <p className="mt-2 flex items-center gap-1 text-xs font-medium text-primary">
-                            <Activity size={14} />
-                            ready to query
-                        </p>
-                    </article>
-
-                    <article className="rounded-3xl border border-border bg-background p-4">
-                        <p className="text-xs text-muted">Charts generated</p>
-                        <p className="mt-2 text-2xl font-semibold text-foreground">
-                            <CountUp end={24} />
-                        </p>
-                        <p className="mt-2 flex items-center gap-1 text-xs font-medium text-primary">
-                            <ArrowUpRight size={14} />
-                            auto-built
-                        </p>
-                    </article>
-                </div>
-
-                <article className="rounded-3xl border border-border bg-background p-4">
-                    <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
-                        <Sparkles size={17} />
-                        Recent generation
-                    </div>
-
-                    <div className="space-y-3">
-                        {uploads.map((upload) => (
-                            <div
-                                key={upload.file}
-                                className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-3 py-2"
-                            >
-                                <IconBadge icon={FileSpreadsheet} tone={upload.tone} size="sm" />
-
-                                <div>
-                                    <p className="text-sm font-medium text-foreground">{upload.file}</p>
-                                    <p className="text-xs text-muted">{upload.status}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </article>
-            </div>
-
-            <div className="mt-5 grid gap-3 md:grid-cols-3">
-                {supportCards.map((card) => (
-                    <article
-                        key={card.title}
-                        className="interactive-card flex items-center gap-3 rounded-3xl border border-border bg-background p-4 hover:border-border-strong"
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={`${mode}-side`}
+                        initial={{ opacity: 0, y: 14 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.25 }}
                     >
-                        <IconBadge icon={card.icon} tone={card.tone} size="sm" />
-
-                        <div>
-                            <p className="text-sm font-semibold text-foreground">{card.title}</p>
-                            <p className="text-xs leading-5 text-muted">{card.copy}</p>
-                        </div>
-                    </article>
-                ))}
+                        <ModeSidePanel mode={mode} config={activeConfig} />
+                    </motion.div>
+                </AnimatePresence>
             </div>
+
+            <WorkspacePreviewTabs className="mt-5" />
         </div>
     );
 }

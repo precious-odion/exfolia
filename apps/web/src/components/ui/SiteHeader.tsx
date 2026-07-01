@@ -4,10 +4,9 @@ import { useState } from "react";
 import { Layers3, Menu, X } from "lucide-react";
 
 const navLinks = [
-    { label: "Features", href: "#features" },
-    { label: "Generation", href: "#generation" },
     { label: "Preview", href: "#live-preview" },
-    { label: "Workflow", href: "#workflow" },
+    { label: "Audience", href: "#audience" },
+    { label: "Features", href: "#features" },
     { label: "Trust", href: "#trust" }
 ];
 

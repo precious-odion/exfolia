@@ -37,8 +37,11 @@
   --window-yellow: #febc2e;
   --window-green: #28c840;
 
-  --hero-card-shadow: 0 20px 70px rgba(0, 0, 0, 0.1);
-  --hero-photo-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.82) 76%);
+  --hero-photo-overlay: linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.9) 20%, rgba(0, 0, 0, 0) 43%);
+  --hero-edge-fade-left: linear-gradient(90deg, var(--background) 0%, var(--background) 30%, transparent 100%);
+  --hero-edge-fade-right: linear-gradient(270deg, var(--background) 0%, var(--background) 30%, transparent 100%);
+  --hero-edge-fade-left-wide: linear-gradient(90deg, var(--background) 0%, var(--background) 40%, transparent 100%);
+  --hero-edge-fade-right-wide: linear-gradient(270deg, var(--background) 0%, var(--background) 50%, transparent 100%);
   --category-donut: conic-gradient(var(--accent-amber-soft) 0 38%, var(--primary-soft) 38% 65%, var(--accent-sky-soft) 65% 86%, var(--accent-rose-soft) 86% 100%);
   --quality-score-ring: conic-gradient(var(--primary) 0 82%, var(--primary-soft) 82% 100%);
 
@@ -127,12 +130,40 @@ img {
 }
 
 
-.hero-photo-card {
-  box-shadow: var(--hero-card-shadow);
-}
-
 .hero-photo-overlay {
   background: var(--hero-photo-overlay);
+}
+
+.hero-people-fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.hero-people-fade-left {
+  left: 0;
+  width: 22%;
+  background: var(--hero-edge-fade-left);
+}
+
+.hero-people-fade-right {
+  right: 0;
+  width: 22%;
+  background: var(--hero-edge-fade-right);
+}
+
+@media (min-width: 1024px) {
+  .hero-people-fade-left {
+    width: 18%;
+    background: var(--hero-edge-fade-left-wide);
+  }
+
+  .hero-people-fade-right {
+    width: 18%;
+    background: var(--hero-edge-fade-right-wide);
+  }
 }
 
 .category-donut {

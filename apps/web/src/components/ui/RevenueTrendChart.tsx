@@ -2,13 +2,27 @@
 
 import { useMemo, useState } from "react";
 
-const revenueData = [
-    { month: "Jan", value: 1100 },
-    { month: "Feb", value: 2100 },
-    { month: "Mar", value: 3000 },
-    { month: "Apr", value: 6100 },
-    { month: "May", value: 5200 },
-    { month: "Jun", value: 7200 }
+export type TrendPoint = {
+    label: string;
+    value: number;
+};
+
+type RevenueTrendChartProps = {
+    title?: string;
+    badge?: string;
+    data?: TrendPoint[];
+    valueLabel?: string;
+    maxValue?: number;
+    defaultActiveIndex?: number;
+};
+
+const defaultRevenueData = [
+    { label: "Jan", value: 1100 },
+    { label: "Feb", value: 2100 },
+    { label: "Mar", value: 3000 },
+    { label: "Apr", value: 6100 },
+    { label: "May", value: 5200 },
+    { label: "Jun", value: 7200 }
 ];
 
 const chartWidth = 640;
@@ -20,24 +34,35 @@ const padding = {
     left: 48
 };
 
-function getPoint(index: number, value: number) {
+function getPoint(index: number, value: number, dataLength: number, maxValue: number) {
     const innerWidth = chartWidth - padding.left - padding.right;
     const innerHeight = chartHeight - padding.top - padding.bottom;
-    const maxValue = 8000;
 
-    const x = padding.left + (index / (revenueData.length - 1)) * innerWidth;
+    const x = padding.left + (index / (dataLength - 1)) * innerWidth;
     const y = padding.top + innerHeight - (value / maxValue) * innerHeight;
 
     return { x, y };
 }
 
-export function RevenueTrendChart() {
-    const [activeIndex, setActiveIndex] = useState(3);
+export function RevenueTrendChart({
+    title = "Revenue Trend",
+    badge = "+24% Growth",
+    data = defaultRevenueData,
+    valueLabel = "revenue",
+    maxValue = 8000,
+    defaultActiveIndex = 3
+}: RevenueTrendChartProps) {
+    const [activeIndex, setActiveIndex] = useState(defaultActiveIndex);
 
     const points = useMemo(
-        () => revenueData.map((item, index) => getPoint(index, item.value)),
-        []
+        () => data.map((item, index) => getPoint(index, item.value, data.length, maxValue)),
+        [data, maxValue]
     );
+
+    const gridValues = useMemo(() => {
+        const step = maxValue / 4;
+        return [0, step, step * 2, step * 3, maxValue].map((value) => Math.round(value));
+    }, [maxValue]);
 
     const linePath = points
         .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`)
@@ -46,7 +71,7 @@ export function RevenueTrendChart() {
     const areaPath = `${linePath} L ${points[points.length - 1]?.x} ${chartHeight - padding.bottom
         } L ${points[0]?.x} ${chartHeight - padding.bottom} Z`;
 
-    const activeData = revenueData[activeIndex];
+    const activeData = data[activeIndex];
     const activePoint = points[activeIndex];
 
     function handleMouseMove(event: React.MouseEvent<SVGSVGElement>) {
@@ -72,9 +97,9 @@ export function RevenueTrendChart() {
     return (
         <div className="relative rounded-3xl border border-border bg-surface p-5">
             <div className="mb-4 flex items-center justify-between gap-4">
-                <h3 className="font-semibold text-foreground">Revenue Trend</h3>
+                <h3 className="font-semibold text-foreground">{title}</h3>
                 <span className="rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold text-primary">
-                    +24% Growth
+                    {badge}
                 </span>
             </div>
 
@@ -82,12 +107,12 @@ export function RevenueTrendChart() {
                 viewBox={`0 0 ${chartWidth} ${chartHeight}`}
                 className="h-[280px] w-full cursor-crosshair"
                 role="img"
-                aria-label="Revenue trend chart"
+                aria-label={`${title} chart`}
                 onMouseMove={handleMouseMove}
-                onMouseLeave={() => setActiveIndex(3)}
+                onMouseLeave={() => setActiveIndex(defaultActiveIndex)}
             >
-                {[0, 2000, 4000, 6000, 8000].map((value) => {
-                    const y = getPoint(0, value).y;
+                {gridValues.map((value) => {
+                    const y = getPoint(0, value, data.length, maxValue).y;
 
                     return (
                         <g key={value}>
@@ -111,11 +136,11 @@ export function RevenueTrendChart() {
                     );
                 })}
 
-                {revenueData.map((item, index) => {
+                {data.map((item, index) => {
                     const point = points[index];
 
                     return (
-                        <g key={item.month}>
+                        <g key={item.label}>
                             <line
                                 x1={point.x}
                                 x2={point.x}
@@ -130,7 +155,7 @@ export function RevenueTrendChart() {
                                 textAnchor="middle"
                                 className="fill-muted text-[12px]"
                             >
-                                {item.month}
+                                {item.label}
                             </text>
                         </g>
                     );
@@ -177,9 +202,9 @@ export function RevenueTrendChart() {
                         top: `${activePoint.y + 58}px`
                     }}
                 >
-                    <p className="text-sm font-semibold">{activeData.month}</p>
+                    <p className="text-sm font-semibold">{activeData.label}</p>
                     <p className="mt-1 text-sm text-chart-tooltip-accent">
-                        revenue: {activeData.value}
+                        {valueLabel}: {activeData.value}
                     </p>
                 </div>
             ) : null}
