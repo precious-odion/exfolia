@@ -57,7 +57,7 @@ const featureCards = [
   },
   {
     title: "Ask AI for insight",
-    description: "Use Gemini or Groq to explain computed summaries and trends.",
+    description: "Use Exfolia AI to explain computed summaries and trends.",
     icon: Brain,
     tone: "primary"
   }
