@@ -95,8 +95,9 @@ const trustCards = [
     title: "Validated inputs",
     description: "Every upload and request shape is checked before it enters the workspace.",
     icon: CheckCircle2,
-    bg: "bg-primary-soft",
-    iconClassName: "text-primary",
+    bg: "bg-accent-rose-soft",
+    iconClassName: "text-rose-700",
+    checkClassName: "text-rose-700",
     items: [
       "Validate upload payloads",
       "Protect workspace actions",
@@ -108,7 +109,8 @@ const trustCards = [
     description: "CSV schemas can vary while Exfolia keeps rows, columns, and metadata structured.",
     icon: Database,
     bg: "bg-accent-sky-soft",
-    iconClassName: "text-primary",
+    iconClassName: "text-sky-700",
+    checkClassName: "text-sky-700",
     items: [
       "Support changing CSV columns",
       "Preserve dataset metadata",
@@ -120,7 +122,8 @@ const trustCards = [
     description: "AI explains computed summaries while users stay in control of what gets explored.",
     icon: Brain,
     bg: "bg-accent-amber-soft",
-    iconClassName: "text-primary",
+    iconClassName: "text-amber-700",
+    checkClassName: "text-amber-700",
     items: [
       "Summarize computed results",
       "Send compact AI context",
@@ -348,7 +351,7 @@ export default function Home() {
                     <div className="mt-6 space-y-3">
                       {card.items.map((item) => (
                         <div key={item} className="flex items-center gap-2">
-                          <CheckCircle2 size={16} strokeWidth={2.1} className="shrink-0 text-primary" />
+                          <CheckCircle2 size={16} strokeWidth={2.1} className={`shrink-0 ${card.checkClassName}`} />
                           <p className="text-sm text-foreground">{item}</p>
                         </div>
                       ))}
