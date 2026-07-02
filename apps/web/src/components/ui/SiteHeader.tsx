@@ -44,7 +44,7 @@ export function SiteHeader() {
 
                 <button
                     type="button"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface text-foreground transition-transform duration-200 active:scale-95 min-[640px]:hidden"
+className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-foreground transition-transform duration-200 active:scale-95 min-[640px]:hidden"
                     aria-label="Open menu"
                     aria-expanded={isMenuOpen}
                     onClick={() => setIsMenuOpen(true)}
@@ -54,8 +54,8 @@ export function SiteHeader() {
             </div>
 
             {isMenuOpen ? (
-                <div className="fixed inset-x-0 top-[73px] z-50 min-h-[calc(100vh-73px)] border-t border-border bg-surface px-6 py-6 min-[640px]:hidden">
-                    <div className="flex items-center justify-between border-b border-border pb-5">
+<div className="fixed inset-0 z-[60] min-h-screen bg-surface px-6 py-5 min-[640px]:hidden">
+                    <div className="flex items-center justify-between pb-5">
                         <p className="text-sm font-semibold text-primary">Menu</p>
                         <button
                             type="button"
@@ -67,7 +67,7 @@ export function SiteHeader() {
                         </button>
                     </div>
 
-                    <nav className="flex min-h-[calc(100vh-210px)] flex-col pt-8">
+                    <nav className="flex min-h-[calc(100vh-120px)] flex-col pt-8">
                         <div className="space-y-7">
                             {navLinks.map((link) => (
                                 <a key={link.href} href={link.href} onClick={closeMenu} className="block text-base font-semibold text-foreground">
