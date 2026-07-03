@@ -61,5 +61,6 @@ Tagline:
 
 ```txt
 Peel back the layers of your data.
+```
 
 CI smoke test completed after workflow bootstrap.

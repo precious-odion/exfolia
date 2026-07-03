@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { BarChart3, Brain, PieChart, TrendingUp } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { AvatarStack } from "./Avatar";
 import { RevenueTrendChart, type TrendPoint } from "./RevenueTrendChart";
 import { WorkspacePreviewTabs } from "./WorkspacePreview";
 
