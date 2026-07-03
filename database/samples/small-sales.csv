@@ -1,0 +1,4 @@
+revenue,country,signup_date,customer_type,is_repeat
+1200,United States,2026-01-12,retail,true
+2400,Canada,2026-01-19,enterprise,false
+1800,United States,2026-02-01,retail,true
