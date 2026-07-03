@@ -1,8 +1,10 @@
 import type { FastifyInstance } from "fastify";
+import { z } from "zod";
 import { getDb } from "../../db/connection.js";
 import { processCsvStream, type CsvUploadFailureReason } from "./csvProcessor.js";
 import {
     createProcessingDataset,
+    getDatasetPreview,
     insertDatasetColumns,
     insertDatasetRows,
     markDatasetReady
@@ -14,6 +16,22 @@ const csvMimeTypes = new Set([
     "application/csv",
     "application/vnd.ms-excel"
 ]);
+
+const datasetPreviewParamsSchema = z.object({
+    datasetId: z.string().uuid()
+});
+
+const datasetPreviewQuerySchema = z.object({
+    limit: z.coerce.number().int().positive().max(100).default(50),
+    offset: z.coerce.number().int().nonnegative().default(0)
+});
+
+function buildApiError(message: string) {
+    return {
+        status: "failed",
+        message
+    };
+}
 
 function buildFailedUploadSummary(reason: CsvUploadFailureReason, message: string) {
     return {
@@ -39,6 +57,37 @@ function datasetNameFromFilename(filename: string) {
 }
 
 export async function registerDatasetRoutes(app: FastifyInstance) {
+    app.get("/:datasetId/preview", async (request, reply) => {
+        const parsedParams = datasetPreviewParamsSchema.safeParse(request.params);
+        const parsedQuery = datasetPreviewQuerySchema.safeParse(request.query);
+
+        if (!parsedParams.success) {
+            return reply.code(400).send(buildApiError("Invalid dataset id."));
+        }
+
+        if (!parsedQuery.success) {
+            return reply.code(400).send(buildApiError("Invalid preview pagination."));
+        }
+
+        try {
+            const preview = await getDatasetPreview(
+                getDb(),
+                parsedParams.data.datasetId,
+                parsedQuery.data
+            );
+
+            if (!preview) {
+                return reply.code(404).send(buildApiError("Dataset not found."));
+            }
+
+            return reply.send(preview);
+        } catch (error) {
+            request.log.error(error);
+
+            return reply.code(500).send(buildApiError("Dataset preview failed."));
+        }
+    });
+
     app.post("/upload", async (request, reply) => {
         if (!request.isMultipart()) {
             return reply.code(400).send(
