@@ -59,7 +59,7 @@ export async function insertDatasetColumns(
             position: column.position,
             nullable: column.nullable,
             unique_count: column.unique_count,
-            sample_values: column.sample_values
+            sample_values: JSON.stringify(column.sample_values)
         }))
     );
 }
