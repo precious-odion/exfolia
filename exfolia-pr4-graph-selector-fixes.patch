@@ -1,0 +1,181 @@
+diff --git a/apps/web/src/components/workspace/DatasetPreviewPanel.tsx b/apps/web/src/components/workspace/DatasetPreviewPanel.tsx
+index 39680eb..bf945c1 100644
+--- a/apps/web/src/components/workspace/DatasetPreviewPanel.tsx
++++ b/apps/web/src/components/workspace/DatasetPreviewPanel.tsx
+@@ -1,6 +1,6 @@
+ "use client";
+ 
+-import { useMemo, useState } from "react";
++import { useEffect, useMemo, useRef, useState } from "react";
+ import {
+   AlertTriangle,
+   CheckCircle2,
+@@ -298,26 +298,54 @@ function MetricCard({
+ function RelationshipSelector({
+   charts,
+   selectedChartIds,
++  draftSelectedChartIds,
+   isOpen,
+-  onToggleOpen,
+-  onToggleChart
++  onOpen,
++  onClose,
++  onToggleDraftChart,
++  onApply
+ }: {
+   charts: ChartSuggestion[];
+   selectedChartIds: string[];
++  draftSelectedChartIds: string[];
+   isOpen: boolean;
+-  onToggleOpen: () => void;
+-  onToggleChart: (chartId: string) => void;
++  onOpen: () => void;
++  onClose: () => void;
++  onToggleDraftChart: (chartId: string) => void;
++  onApply: () => void;
+ }) {
++  const containerRef = useRef<HTMLDivElement>(null);
++  const visibleSelectedCount = isOpen ? draftSelectedChartIds.length : selectedChartIds.length;
++
++  useEffect(() => {
++    if (!isOpen) return;
++
++    function handleDocumentMouseDown(event: MouseEvent) {
++      const target = event.target;
++
++      if (!(target instanceof Node)) return;
++      if (containerRef.current?.contains(target)) return;
++
++      onClose();
++    }
++
++    document.addEventListener("mousedown", handleDocumentMouseDown);
++
++    return () => {
++      document.removeEventListener("mousedown", handleDocumentMouseDown);
++    };
++  }, [isOpen, onClose]);
++
+   return (
+-    <div className="relative w-full max-w-md">
++    <div ref={containerRef} className="relative w-full max-w-md">
+       <button
+         type="button"
+         className="flex h-11 w-full items-center justify-between rounded-lg border border-border bg-background px-4 text-left text-sm font-semibold text-foreground"
+         aria-expanded={isOpen}
+-        onClick={onToggleOpen}
++        onClick={isOpen ? onClose : onOpen}
+       >
+         <span>
+-          {selectedChartIds.length} selected (max {maxSelectedCharts})
++          {visibleSelectedCount} selected (max {maxSelectedCharts})
+         </span>
+         <ChevronDown size={17} className="text-muted" />
+       </button>
+@@ -330,14 +358,14 @@ function RelationshipSelector({
+ 
+           <div className="max-h-80 overflow-y-auto p-2">
+             {charts.map((chart) => {
+-              const isSelected = selectedChartIds.includes(chart.id);
++              const isSelected = draftSelectedChartIds.includes(chart.id);
+ 
+               return (
+                 <button
+                   key={chart.id}
+                   type="button"
+                   className="flex w-full items-start gap-3 rounded-lg px-3 py-3 text-left text-sm text-foreground hover:bg-primary-soft"
+-                  onClick={() => onToggleChart(chart.id)}
++                  onClick={() => onToggleDraftChart(chart.id)}
+                 >
+                   <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center">
+                     {isSelected ? <Check size={16} /> : null}
+@@ -350,6 +378,16 @@ function RelationshipSelector({
+               );
+             })}
+           </div>
++
++          <div className="border-t border-border bg-surface p-2">
++            <button
++              type="button"
++              className="flex h-10 w-full items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-white"
++              onClick={onApply}
++            >
++              Apply
++            </button>
++          </div>
+         </div>
+       ) : null}
+     </div>
+@@ -394,13 +432,15 @@ function BarChartCard({ chart }: { chart: ChartSuggestion }) {
+                 const height = Math.max((point.value / maxValue) * 100, 2);
+ 
+                 return (
+-                  <div key={point.label} className="flex min-w-0 flex-col items-center justify-end gap-2">
++                  <div key={point.label} className="flex h-full min-w-0 flex-col items-center justify-end gap-2">
+                     <span className="text-xs font-medium text-muted">{formatNumber(point.value)}</span>
+-                    <div
+-                      className="w-full max-w-14 rounded-t-md bg-primary"
+-                      style={{ height: `${height}%` }}
+-                      aria-label={`${point.label}: ${formatNumber(point.value)}`}
+-                    />
++                    <div className="flex min-h-0 w-full flex-1 items-end justify-center">
++                      <div
++                        className="w-full max-w-14 rounded-t-md bg-primary"
++                        style={{ height: `${height}%` }}
++                        aria-label={`${point.label}: ${formatNumber(point.value)}`}
++                      />
++                    </div>
+                   </div>
+                 );
+               })}
+@@ -439,6 +479,7 @@ export function DatasetPreviewPanel({ preview }: DatasetPreviewPanelProps) {
+   const [selectedChartIds, setSelectedChartIds] = useState(() =>
+     chartSuggestions.slice(0, maxSelectedCharts).map((chart) => chart.id)
+   );
++  const [draftSelectedChartIds, setDraftSelectedChartIds] = useState(selectedChartIds);
+   const selectedCharts = chartSuggestions.filter((chart) => selectedChartIds.includes(chart.id));
+   const firstCategoryColumn = groups.category[0];
+   const firstNumericColumn = groups.numeric[0];
+@@ -479,8 +520,13 @@ export function DatasetPreviewPanel({ preview }: DatasetPreviewPanelProps) {
+     "Next step: build visual filters from these inferred columns."
+   ];
+ 
+-  function handleToggleChart(chartId: string) {
+-    setSelectedChartIds((currentIds) => {
++  function handleOpenRelationshipSelector() {
++    setDraftSelectedChartIds(selectedChartIds);
++    setIsRelationshipSelectorOpen(true);
++  }
++
++  function handleToggleDraftChart(chartId: string) {
++    setDraftSelectedChartIds((currentIds) => {
+       if (currentIds.includes(chartId)) {
+         return currentIds.filter((id) => id !== chartId);
+       }
+@@ -493,6 +539,11 @@ export function DatasetPreviewPanel({ preview }: DatasetPreviewPanelProps) {
+     });
+   }
+ 
++  function handleApplyRelationships() {
++    setSelectedChartIds(draftSelectedChartIds);
++    setIsRelationshipSelectorOpen(false);
++  }
++
+   return (
+     <section className="px-5 py-6 sm:px-6">
+       <div className="mx-auto max-w-7xl">
+@@ -654,9 +705,12 @@ export function DatasetPreviewPanel({ preview }: DatasetPreviewPanelProps) {
+               <RelationshipSelector
+                 charts={chartSuggestions}
+                 selectedChartIds={selectedChartIds}
++                draftSelectedChartIds={draftSelectedChartIds}
+                 isOpen={isRelationshipSelectorOpen}
+-                onToggleOpen={() => setIsRelationshipSelectorOpen((isOpen) => !isOpen)}
+-                onToggleChart={handleToggleChart}
++                onOpen={handleOpenRelationshipSelector}
++                onClose={() => setIsRelationshipSelectorOpen(false)}
++                onToggleDraftChart={handleToggleDraftChart}
++                onApply={handleApplyRelationships}
+               />
+ 
+               <button

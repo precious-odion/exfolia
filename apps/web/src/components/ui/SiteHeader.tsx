@@ -36,7 +36,7 @@ export function SiteHeader() {
                 </nav>
 
                 <a
-                    href="#workspace"
+                    href="/workspace"
                     className="hidden rounded-full bg-primary px-4 py-2 text-sm font-medium !text-white transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary min-[640px]:inline-flex"
                 >
                     Open workspace
@@ -77,7 +77,7 @@ export function SiteHeader() {
                         </div>
 
                         <a
-                            href="#workspace"
+                            href="/workspace"
                             onClick={closeMenu}
                             className="mt-auto inline-flex w-full items-center justify-center rounded-xl bg-primary px-5 py-4 text-sm font-semibold !text-white transition-transform duration-200 active:scale-[0.98]"
                         >
@@ -89,3 +89,4 @@ export function SiteHeader() {
         </header>
     );
 }
+

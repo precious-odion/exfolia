@@ -1,0 +1,389 @@
+diff --git a/apps/web/src/components/workspace/DatasetPreviewPanel.tsx b/apps/web/src/components/workspace/DatasetPreviewPanel.tsx
+index 6ba7d84..39680eb 100644
+--- a/apps/web/src/components/workspace/DatasetPreviewPanel.tsx
++++ b/apps/web/src/components/workspace/DatasetPreviewPanel.tsx
+@@ -1,10 +1,14 @@
++"use client";
++
++import { useMemo, useState } from "react";
+ import {
+   AlertTriangle,
+-  BarChart3,
+   CheckCircle2,
++  Check,
++  ChevronDown,
+   Database,
+-  LineChart,
+   ListChecks,
++  MoreVertical,
+   RefreshCcw,
+   Rows3,
+   Sparkles,
+@@ -33,10 +37,13 @@ type ChartSuggestion = {
+   title: string;
+   subtitle: string;
+   footnote: string;
++  question: string;
++  importance: number;
+   points: ChartPoint[];
+ };
+ 
+ const chartLimit = 8;
++const maxSelectedCharts = 3;
+ 
+ function formatCellValue(value: CellValue) {
+   if (value === null) return "Empty";
+@@ -78,6 +85,36 @@ function getColumnGroups(columns: DatasetColumn[]) {
+   };
+ }
+ 
++function getNumericColumnScore(column: DatasetColumn) {
++  const name = column.normalized_name.toLowerCase();
++  let score = 50;
++
++  if (/(revenue|income|amount|sales|price|cost|profit|total|value|balance)/.test(name)) {
++    score += 45;
++  }
++
++  if (/(age|year|id|index|number|count)/.test(name)) {
++    score -= 25;
++  }
++
++  return score;
++}
++
++function getCategoryColumnScore(column: DatasetColumn) {
++  const name = column.normalized_name.toLowerCase();
++  let score = 50;
++
++  if (/(country|region|category|segment|type|status|gender|department|channel)/.test(name)) {
++    score += 35;
++  }
++
++  if (/(id|name|email|phone|address)/.test(name)) {
++    score -= 30;
++  }
++
++  return score;
++}
++
+ function getMissingCellCount(rows: DatasetRow[], columns: DatasetColumn[]) {
+   return rows.reduce((total, row) => {
+     return (
+@@ -154,40 +191,66 @@ function getDateTotals(rows: DatasetRow[], dateColumn: DatasetColumn, numericCol
+ function buildChartSuggestions(preview: DatasetPreview): ChartSuggestion[] {
+   const groups = getColumnGroups(preview.columns);
+   const charts: ChartSuggestion[] = [];
+-  const primaryNumber = groups.numeric[0];
+ 
+-  groups.category.slice(0, 3).forEach((categoryColumn) => {
+-    const points = getCategoryTotals(preview.rows, categoryColumn, primaryNumber);
+-    if (points.length < 2) return;
++  groups.numeric.forEach((numericColumn) => {
++    groups.category.forEach((categoryColumn) => {
++      const points = getCategoryTotals(preview.rows, categoryColumn, numericColumn);
++      if (points.length < 2) return;
+ 
+-    charts.push({
+-      id: `${categoryColumn.id}-${primaryNumber?.id ?? "count"}`,
+-      title: primaryNumber
+-        ? `${humanizeFieldName(primaryNumber.name)} by ${humanizeFieldName(categoryColumn.name)}`
+-        : `Records by ${humanizeFieldName(categoryColumn.name)}`,
+-      subtitle: `${preview.rows.length} preview rows - ${points.length} categories`,
+-      footnote: primaryNumber ? "Grouped sum from preview rows" : "Grouped record count from preview rows",
+-      points
++      const importance = Math.max(
++        35,
++        Math.min(98, getNumericColumnScore(numericColumn) + getCategoryColumnScore(categoryColumn) - 35)
++      );
++
++      charts.push({
++        id: `${numericColumn.id}-${categoryColumn.id}-sum`,
++        title: `${humanizeFieldName(numericColumn.name)} by ${humanizeFieldName(categoryColumn.name)}`,
++        subtitle: `${preview.rows.length} preview rows - ${points.length} categories`,
++        footnote: "Grouped sum from preview rows",
++        question: `Which ${humanizeFieldName(categoryColumn.name)} drives the most ${humanizeFieldName(
++          numericColumn.name
++        )}? (SUM)`,
++        importance,
++        points
++      });
+     });
+   });
+ 
+-  const primaryDate = groups.date[0];
+-  if (primaryDate) {
+-    const points = getDateTotals(preview.rows, primaryDate, primaryNumber);
+-    if (points.length >= 2) {
++  groups.date.forEach((dateColumn) => {
++    groups.numeric.forEach((numericColumn) => {
++      const points = getDateTotals(preview.rows, dateColumn, numericColumn);
++      if (points.length < 2) return;
++
+       charts.push({
+-        id: `${primaryDate.id}-${primaryNumber?.id ?? "count"}`,
+-        title: primaryNumber
+-          ? `${humanizeFieldName(primaryNumber.name)} over time`
+-          : `Records over ${humanizeFieldName(primaryDate.name)}`,
++        id: `${numericColumn.id}-${dateColumn.id}-trend`,
++        title: `${humanizeFieldName(numericColumn.name)} over time`,
+         subtitle: `${points.length} time buckets`,
+         footnote: "Timeline preview from uploaded sample",
++        question: `How is ${humanizeFieldName(numericColumn.name)} trending over time? (SUM)`,
++        importance: Math.max(45, Math.min(92, getNumericColumnScore(numericColumn) + 5)),
+         points
+       });
+-    }
+-  }
++    });
++  });
++
++  groups.category.forEach((categoryColumn) => {
++    const points = getCategoryTotals(preview.rows, categoryColumn);
++    if (points.length < 2) return;
+ 
+-  return charts.slice(0, 4);
++    charts.push({
++      id: `${categoryColumn.id}-count`,
++      title: `Records by ${humanizeFieldName(categoryColumn.name)}`,
++      subtitle: `${preview.rows.length} preview rows - ${points.length} categories`,
++      footnote: "Grouped record count from preview rows",
++      question: `How are records distributed by ${humanizeFieldName(categoryColumn.name)}? (COUNT)`,
++      importance: Math.max(40, Math.min(88, getCategoryColumnScore(categoryColumn))),
++      points
++    });
++  });
++
++  return charts
++    .sort((left, right) => right.importance - left.importance)
++    .slice(0, 12);
+ }
+ 
+ function InsightList({
+@@ -232,8 +295,70 @@ function MetricCard({
+   );
+ }
+ 
++function RelationshipSelector({
++  charts,
++  selectedChartIds,
++  isOpen,
++  onToggleOpen,
++  onToggleChart
++}: {
++  charts: ChartSuggestion[];
++  selectedChartIds: string[];
++  isOpen: boolean;
++  onToggleOpen: () => void;
++  onToggleChart: (chartId: string) => void;
++}) {
++  return (
++    <div className="relative w-full max-w-md">
++      <button
++        type="button"
++        className="flex h-11 w-full items-center justify-between rounded-lg border border-border bg-background px-4 text-left text-sm font-semibold text-foreground"
++        aria-expanded={isOpen}
++        onClick={onToggleOpen}
++      >
++        <span>
++          {selectedChartIds.length} selected (max {maxSelectedCharts})
++        </span>
++        <ChevronDown size={17} className="text-muted" />
++      </button>
++
++      {isOpen ? (
++        <div className="absolute left-0 top-12 z-20 w-full overflow-hidden rounded-xl border border-border bg-surface shadow-sm">
++          <div className="border-b border-border px-4 py-3 text-sm font-semibold text-foreground">
++            Select relationships for graphs
++          </div>
++
++          <div className="max-h-80 overflow-y-auto p-2">
++            {charts.map((chart) => {
++              const isSelected = selectedChartIds.includes(chart.id);
++
++              return (
++                <button
++                  key={chart.id}
++                  type="button"
++                  className="flex w-full items-start gap-3 rounded-lg px-3 py-3 text-left text-sm text-foreground hover:bg-primary-soft"
++                  onClick={() => onToggleChart(chart.id)}
++                >
++                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center">
++                    {isSelected ? <Check size={16} /> : null}
++                  </span>
++                  <span>
++                    <span>{chart.question}</span>
++                    <span className="font-semibold"> - {chart.importance}% importance</span>
++                  </span>
++                </button>
++              );
++            })}
++          </div>
++        </div>
++      ) : null}
++    </div>
++  );
++}
++
+ function BarChartCard({ chart }: { chart: ChartSuggestion }) {
+   const maxValue = Math.max(...chart.points.map((point) => point.value), 1);
++  const yAxisLabels = [maxValue, maxValue * 0.75, maxValue * 0.5, maxValue * 0.25, 0];
+ 
+   return (
+     <article className="rounded-xl border border-border bg-surface p-5">
+@@ -243,25 +368,60 @@ function BarChartCard({ chart }: { chart: ChartSuggestion }) {
+           <p className="mt-1 text-sm text-muted">{chart.subtitle}</p>
+           <p className="mt-2 text-xs italic text-muted">{chart.footnote}</p>
+         </div>
+-        <BarChart3 size={18} className="shrink-0 text-muted" />
++        <MoreVertical size={18} className="shrink-0 text-muted" />
+       </div>
+ 
+-      <div className="mt-6 space-y-4">
+-        {chart.points.map((point) => {
+-          const width = Math.max((point.value / maxValue) * 100, 3);
++      <div className="mt-8 grid grid-cols-[3rem_1fr] gap-3">
++        <div className="flex h-72 flex-col justify-between text-right text-xs text-muted">
++          {yAxisLabels.map((label) => (
++            <span key={label}>{formatNumber(label)}</span>
++          ))}
++        </div>
+ 
+-          return (
+-            <div key={point.label}>
+-              <div className="mb-1 flex items-center justify-between gap-3 text-xs">
+-                <span className="truncate font-medium text-foreground">{point.label}</span>
+-                <span className="shrink-0 text-muted">{formatNumber(point.value)}</span>
+-              </div>
+-              <div className="h-3 rounded-full bg-background">
+-                <div className="h-3 rounded-full bg-primary" style={{ width: `${width}%` }} />
+-              </div>
++        <div className="min-w-0">
++          <div className="relative h-72 border-b border-border">
++            <div className="absolute inset-0 flex flex-col justify-between">
++              {yAxisLabels.map((label) => (
++                <span key={label} className="border-t border-border/70" />
++              ))}
++            </div>
++
++            <div
++              className="relative z-10 grid h-full items-end gap-3"
++              style={{ gridTemplateColumns: `repeat(${chart.points.length}, minmax(2rem, 1fr))` }}
++            >
++              {chart.points.map((point) => {
++                const height = Math.max((point.value / maxValue) * 100, 2);
++
++                return (
++                  <div key={point.label} className="flex min-w-0 flex-col items-center justify-end gap-2">
++                    <span className="text-xs font-medium text-muted">{formatNumber(point.value)}</span>
++                    <div
++                      className="w-full max-w-14 rounded-t-md bg-primary"
++                      style={{ height: `${height}%` }}
++                      aria-label={`${point.label}: ${formatNumber(point.value)}`}
++                    />
++                  </div>
++                );
++              })}
+             </div>
+-          );
+-        })}
++          </div>
++
++          <div
++            className="mt-3 grid gap-3"
++            style={{ gridTemplateColumns: `repeat(${chart.points.length}, minmax(2rem, 1fr))` }}
++          >
++            {chart.points.map((point) => (
++              <div
++                key={point.label}
++                className="-rotate-45 truncate text-left text-xs text-muted"
++                title={point.label}
++              >
++                {point.label}
++              </div>
++            ))}
++          </div>
++        </div>
+       </div>
+     </article>
+   );
+@@ -274,7 +434,12 @@ export function DatasetPreviewPanel({ preview }: DatasetPreviewPanelProps) {
+   const missingSampleCells = getMissingCellCount(preview.rows, preview.columns);
+   const completeness = Math.max(0, 100 - (missingSampleCells / totalSampleCells) * 100);
+   const duplicateSampleRows = getDuplicateSampleRows(preview.rows);
+-  const chartSuggestions = buildChartSuggestions(preview);
++  const chartSuggestions = useMemo(() => buildChartSuggestions(preview), [preview]);
++  const [isRelationshipSelectorOpen, setIsRelationshipSelectorOpen] = useState(false);
++  const [selectedChartIds, setSelectedChartIds] = useState(() =>
++    chartSuggestions.slice(0, maxSelectedCharts).map((chart) => chart.id)
++  );
++  const selectedCharts = chartSuggestions.filter((chart) => selectedChartIds.includes(chart.id));
+   const firstCategoryColumn = groups.category[0];
+   const firstNumericColumn = groups.numeric[0];
+   const topCategoryPoint = firstCategoryColumn
+@@ -314,6 +479,20 @@ export function DatasetPreviewPanel({ preview }: DatasetPreviewPanelProps) {
+     "Next step: build visual filters from these inferred columns."
+   ];
+ 
++  function handleToggleChart(chartId: string) {
++    setSelectedChartIds((currentIds) => {
++      if (currentIds.includes(chartId)) {
++        return currentIds.filter((id) => id !== chartId);
++      }
++
++      if (currentIds.length >= maxSelectedCharts) {
++        return [...currentIds.slice(1), chartId];
++      }
++
++      return [...currentIds, chartId];
++    });
++  }
++
+   return (
+     <section className="px-5 py-6 sm:px-6">
+       <div className="mx-auto max-w-7xl">
+@@ -463,23 +642,36 @@ export function DatasetPreviewPanel({ preview }: DatasetPreviewPanelProps) {
+         </div>
+ 
+         <section className="mt-6 rounded-xl border border-border bg-surface p-5">
+-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
++          <div className="flex flex-col gap-4">
+             <div>
+               <h2 className="text-lg font-semibold text-foreground">Graph relationships</h2>
+               <p className="mt-1 max-w-3xl text-sm leading-6 text-muted">
+-                Exfolia selected chart candidates from inferred column types. These charts are
+-                generated from preview rows until full aggregation lands.
++                Top relationships are selected by default. Choose different mappings to customize the charts.
+               </p>
+             </div>
+-            <div className="inline-flex w-fit items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground">
+-              <LineChart size={16} />
+-              {chartSuggestions.length} selected
++
++            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
++              <RelationshipSelector
++                charts={chartSuggestions}
++                selectedChartIds={selectedChartIds}
++                isOpen={isRelationshipSelectorOpen}
++                onToggleOpen={() => setIsRelationshipSelectorOpen((isOpen) => !isOpen)}
++                onToggleChart={handleToggleChart}
++              />
++
++              <button
++                type="button"
++                className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-border bg-surface px-4 text-sm font-semibold text-foreground"
++              >
++                <RefreshCcw size={15} />
++                Regenerate
++              </button>
+             </div>
+           </div>
+ 
+           <div className="mt-5 grid gap-5 xl:grid-cols-2">
+-            {chartSuggestions.length > 0 ? (
+-              chartSuggestions.map((chart) => <BarChartCard key={chart.id} chart={chart} />)
++            {selectedCharts.length > 0 ? (
++              selectedCharts.map((chart) => <BarChartCard key={chart.id} chart={chart} />)
+             ) : (
+               <div className="rounded-xl border border-border bg-background p-5 text-sm leading-6 text-muted">
+                 Upload a dataset with category, date, or numeric fields to unlock automatic chart previews.
